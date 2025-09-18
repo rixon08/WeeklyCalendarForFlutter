@@ -53,6 +53,26 @@ class _WeekPageState extends State<WeekPage> {
     super.initState();
     _currentPageDate = selectedDate;
     _slectedDate = selectedDate;
+    
+    // Calculate the week offset from the reference date (now) to the initial selected date
+    final weeksDifference = _calculateWeeksDifference(widget.now, selectedDate);
+    currentPage = weeksDifference;
+    
+    // Update page counts based on the calculated current page
+    pageCounts = [currentPage - 1, currentPage, currentPage + 1];
+  }
+  
+  int _calculateWeeksDifference(DateTime reference, DateTime target) {
+    // Calculate the difference in weeks between reference and target dates
+    final referenceStartOfWeek = _getStartOfWeek(reference);
+    final targetStartOfWeek = _getStartOfWeek(target);
+    final differenceInDays = targetStartOfWeek.difference(referenceStartOfWeek).inDays;
+    return (differenceInDays / 7).round();
+  }
+  
+  DateTime _getStartOfWeek(DateTime date) {
+    // Get the start of the week (Sunday) for the given date
+    return date.subtract(Duration(days: date.weekday % 7));
   }
 
   @override
@@ -84,7 +104,7 @@ class _WeekPageState extends State<WeekPage> {
   }
 
   Widget dayTable(int index) {
-    int at = pageCounts[index] - 1;
+    int at = pageCounts[index];
     final weekdays = getWeekdays(now, at);
     return DayTableView(
       weekdays: weekdays,

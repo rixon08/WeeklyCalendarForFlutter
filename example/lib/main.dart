@@ -17,6 +17,9 @@ class MyApp extends StatelessWidget {
         body: Column(
           children: [
             WeeklyCalendar(
+              // Set initial datetime to a specific date (e.g., 30 days from now)
+              // If null, it will default to DateTime.now()
+              initialDateTime: DateTime.now().add(const Duration(days: 30)),
               calendarStyle: const CalendarStyle(
                 locale: "en_US",
                 padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),

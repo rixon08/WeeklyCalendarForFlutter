@@ -20,12 +20,14 @@ class WeeklyCalendar extends StatefulWidget {
       ),
     ),
     this.isAutoSelect = true,
+    this.initialDateTime,
     this.onChangedSelectedDate,
     this.onChangedPage,
   });
 
   final CalendarStyle calendarStyle;
   final bool isAutoSelect;
+  final DateTime? initialDateTime;
   final Function(DateTime)? onChangedSelectedDate;
   final Function(DateTime date, PageState state)? onChangedPage;
 
@@ -34,9 +36,9 @@ class WeeklyCalendar extends StatefulWidget {
 }
 
 class _WeeklyCalendarState extends State<WeeklyCalendar> {
-  final DateTime now = DateTime.now();
-  DateTime selectedDate = DateTime.now();
-  DateTime currentPageDate = DateTime.now();
+  late final DateTime now;
+  late DateTime selectedDate;
+  late DateTime currentPageDate;
 
   EdgeInsets get padding => widget.calendarStyle.padding;
   EdgeInsets get margin => widget.calendarStyle.margin;
@@ -47,6 +49,12 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
 
   @override
   void initState() {
+    // Initialize dates based on initialDateTime parameter
+    final initialDate = widget.initialDateTime ?? DateTime.now();
+    now = DateTime.now(); // Always use current time for "today" reference
+    selectedDate = initialDate;
+    currentPageDate = initialDate;
+    
     initializeDateFormatting(widget.calendarStyle.locale);
     super.initState();
   }
@@ -97,7 +105,7 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
   }
 
   Widget customDayOfWeek() {
-    final weekdays = getWeekdays(now, 0);
+    final weekdays = getWeekdays(currentPageDate, 0);
     return DayOfWeekView(weekdays: weekdays, style: widget.calendarStyle);
   }
 }
