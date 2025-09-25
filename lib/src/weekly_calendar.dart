@@ -49,6 +49,7 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
 
   @override
   void initState() {
+    super.initState();
     // Initialize dates based on initialDateTime parameter
     final initialDate = widget.initialDateTime ?? DateTime.now();
     now = DateTime.now(); // Always use current time for "today" reference
@@ -56,25 +57,6 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
     currentPageDate = initialDate;
     
     initializeDateFormatting(widget.calendarStyle.locale);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(WeeklyCalendar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    
-    // Check if initialDateTime has changed
-    if (widget.initialDateTime != oldWidget.initialDateTime) {
-      final newInitialDate = widget.initialDateTime ?? DateTime.now();
-      
-      // Only update if the new initial date is different from current selected date
-      if (newInitialDate != selectedDate) {
-        setState(() {
-          selectedDate = newInitialDate;
-          currentPageDate = newInitialDate;
-        });
-      }
-    }
   }
 
   @override

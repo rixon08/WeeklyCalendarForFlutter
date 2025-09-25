@@ -61,22 +61,6 @@ class _WeekPageState extends State<WeekPage> {
     // Update page counts based on the calculated current page
     pageCounts = [currentPage - 1, currentPage, currentPage + 1];
   }
-
-  @override
-  void didUpdateWidget(WeekPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    
-    // Check if selectedDate has changed from parent
-    if (widget.selectedDate != oldWidget.selectedDate) {
-      _currentPageDate = widget.selectedDate;
-      _selectedDate = widget.selectedDate;
-      
-      // Recalculate week offset for the new selected date
-      final weeksDifference = _calculateWeeksDifference(widget.now, widget.selectedDate);
-      currentPage = weeksDifference;
-      pageCounts = [currentPage - 1, currentPage, currentPage + 1];
-    }
-  }
   
   int _calculateWeeksDifference(DateTime reference, DateTime target) {
     // Calculate the difference in weeks between reference and target dates
