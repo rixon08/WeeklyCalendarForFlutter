@@ -43,7 +43,7 @@ class _WeekPageState extends State<WeekPage> {
   List<int> pageCounts = [0, 1, 2];
   int currentPage = 1;
   late DateTime _currentPageDate;
-  late DateTime _slectedDate;
+  late DateTime _selectedDate;
 
   DateTime get now => widget.now;
   DateTime get selectedDate => widget.selectedDate;
@@ -52,27 +52,38 @@ class _WeekPageState extends State<WeekPage> {
   void initState() {
     super.initState();
     _currentPageDate = selectedDate;
-    _slectedDate = selectedDate;
+    _selectedDate = selectedDate;
     
-    // Calculate the week offset from the reference date (now) to the initial selected date
+    // Calculate the week offset from today (now) to the initial selected date
     final weeksDifference = _calculateWeeksDifference(widget.now, selectedDate);
     currentPage = weeksDifference;
     
     // Update page counts based on the calculated current page
     pageCounts = [currentPage - 1, currentPage, currentPage + 1];
   }
+
+  @override
+  void didUpdateWidget(WeekPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Check if selectedDate has changed from parent
+    if (widget.selectedDate != oldWidget.selectedDate) {
+      _currentPageDate = widget.selectedDate;
+      _selectedDate = widget.selectedDate;
+      
+      // Recalculate week offset for the new selected date
+      final weeksDifference = _calculateWeeksDifference(widget.now, widget.selectedDate);
+      currentPage = weeksDifference;
+      pageCounts = [currentPage - 1, currentPage, currentPage + 1];
+    }
+  }
   
   int _calculateWeeksDifference(DateTime reference, DateTime target) {
     // Calculate the difference in weeks between reference and target dates
-    final referenceStartOfWeek = _getStartOfWeek(reference);
-    final targetStartOfWeek = _getStartOfWeek(target);
+    final referenceStartOfWeek = firstDayOfWeek(reference);
+    final targetStartOfWeek = firstDayOfWeek(target);
     final differenceInDays = targetStartOfWeek.difference(referenceStartOfWeek).inDays;
     return (differenceInDays / 7).round();
-  }
-  
-  DateTime _getStartOfWeek(DateTime date) {
-    // Get the start of the week (Sunday) for the given date
-    return date.subtract(Duration(days: date.weekday % 7));
   }
 
   @override
@@ -119,14 +130,14 @@ class _WeekPageState extends State<WeekPage> {
 
   void changeSelectedDate(int value) {
     if (_pageState(value) == PageState.next) {
-      _slectedDate = addDay(selectedDate, 7);
+      _selectedDate = addDay(selectedDate, 7);
       if (widget.isAutoSelect) {
-        widget.onChangedSelectedDate?.call(_slectedDate);
+        widget.onChangedSelectedDate?.call(_selectedDate);
       }
     } else {
-      _slectedDate = subtractDay(selectedDate, 7);
+      _selectedDate = subtractDay(selectedDate, 7);
       if (widget.isAutoSelect) {
-        widget.onChangedSelectedDate?.call(_slectedDate);
+        widget.onChangedSelectedDate?.call(_selectedDate);
       }
     }
   }

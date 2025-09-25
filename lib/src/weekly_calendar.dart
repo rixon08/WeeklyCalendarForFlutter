@@ -60,6 +60,24 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
   }
 
   @override
+  void didUpdateWidget(WeeklyCalendar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Check if initialDateTime has changed
+    if (widget.initialDateTime != oldWidget.initialDateTime) {
+      final newInitialDate = widget.initialDateTime ?? DateTime.now();
+      
+      // Only update if the new initial date is different from current selected date
+      if (newInitialDate != selectedDate) {
+        setState(() {
+          selectedDate = newInitialDate;
+          currentPageDate = newInitialDate;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Flexible(
       child: Container(
